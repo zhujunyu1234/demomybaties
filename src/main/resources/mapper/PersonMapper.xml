@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.mapper.PersonDao">
+    <select id="get" resultType="Person" parameterType="Person">
+        select * from person
+        <where>
+            <if test="id != null and id != ''">
+                id=#{id}
+            </if>
+            <if test="name != null and name != ''">
+                and name=#{name}
+            </if>
+            <if test="age != null and age !=''">
+                and age=#{age}
+            </if>
+            <if test="address !=null and address !=''">
+                and address =#{address}
+            </if>
+        </where>
+    </select>
+
+    <insert id="add" parameterType="Person" useGeneratedKeys="true" keyProperty="id">
+        insert into person(name,age,address) VALUES (#{name},#{age},#{address})
+        <selectKey keyProperty="id" resultType="Long">
+            SELECT LAST_INSERT_ID() as id
+        </selectKey>
+    </insert>
+
+    <update id="put" parameterType="Person">
+        update person
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name != null and name != ''">
+                name=#{name},
+            </if>
+            <if test="age != null and age !=''">
+                age=#{age},
+            </if>
+            <if test="address !=null and address !=''">
+                address =#{address},
+            </if>
+        </trim>
+        where id= #{id}
+    </update>
+
+    <delete id="delete" parameterType="Long">
+        delete FROM  person where id =#{id}
+    </delete>
+    <select id="getByID" parameterType="Long" resultType="Person">
+        select * from person
+        where id =#{id}
+    </select>
+</mapper>
